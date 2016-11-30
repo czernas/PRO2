@@ -12,7 +12,7 @@ public class ZdrojObrazkuSoubor extends ZdrojObrazku{
 	@Override
 	public void naplnMapu() {
 		getMapa().put(Obrazek.POZADI.getKlic(), "pozadi.png");
-		getMapa().put(Obrazek.HRAC.getKlic(), "niggaDuck.png");
+		getMapa().put(Obrazek.HRAC.getKlic(), "hrac.png");
 		getMapa().put(Obrazek.ZED.getKlic(), "zed.png");
 		//TODO pro hrace, zed a bonus
 	}

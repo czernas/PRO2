@@ -1,6 +1,8 @@
 package hra;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,7 +13,9 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
 import obrazek.Obrazek;
@@ -34,7 +38,11 @@ public class HraciPlocha extends JPanel {
 	private Zed predchoziZed;
 	
 	//TODO
-	
+	private int skore = 0;
+	private JLabel lbSkore;
+	private JLabel lbZprava;
+	private Font font;
+	private Font fontZpravy;
 	
 	private Hrac hrac;
 	private BufferedImage imgPozadi;
@@ -78,10 +86,32 @@ public class HraciPlocha extends JPanel {
 		}
 		
 		seznamZdi = new SeznamZdi();	
+		
+		VyrobFontyALabely();
+	}
+	
+	private void VyrobFontyALabely(){
+		font = new Font("Arial", Font.BOLD, 40);
+		fontZpravy = new Font("Arial", Font.BOLD, 20);
+		
+		this.setLayout(new BorderLayout());
+		
+		lbZprava = new JLabel("");
+		lbZprava.setFont(fontZpravy);
+		lbZprava.setForeground(Color.WHITE);
+		lbZprava.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		lbSkore = new JLabel("0");
+		lbSkore.setFont(font);
+		lbSkore.setForeground(Color.GREEN);
+		lbSkore.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		this.add(lbSkore, BorderLayout.NORTH);
+		this.add(lbZprava, BorderLayout.CENTER);
+		
 	}
 	
 	private void vyrobZdi(int pocet){
-		Zed zed;
 		int vzdalenost = HraciPlocha.SIRKA;
 		
 		for (int i = 0; i < pocet; i++) {
@@ -112,19 +142,43 @@ public class HraciPlocha extends JPanel {
 		
 		hrac.paint(g);
 		
+		lbSkore.paint(g);
+		lbZprava.paint(g);
+		
 	}
 	
 	private void posun(){
 		if (!pauza && hraBezi) {
+			//nastav zed v poradi
+			aktualniZed = seznamZdi.getAktualniZed();
 			
-			//TODO
+			//nastav predchozi zed
+			predchoziZed = seznamZdi.getPredchoziZed();
 			
-			for (Zed zed : seznamZdi) {
-				zed.posun();
+			//detekce kolizi
+			if (isKolizeSeZdi(predchoziZed, hrac) || isKolizeSeZdi(aktualniZed, hrac) || isKolizeSHraniciPlochy(hrac)) {
+				ukonciAVyresetujHruPoNarazu();
+			} else {
+			
+				for (Zed zed : seznamZdi) {
+					zed.posun();
+				}
+				
+				hrac.posun();
+				
+				//hrac prosel zdi bez narazu
+				//zjistit, kde se nachazi
+				//bud pred aktualni zdi - nedelej nic
+				//nebo za aktualni zdi - posun dalsi zed v poradi
+				//prepocitej skore
+				
+				if (hrac.getX() >= aktualniZed.getX()) {
+					seznamZdi.nastavDalsiZedNaAktualni();
+					zvedniSkoreZed();
+					lbSkore.setText(skore + "");
+				}
 			}
-			
-			hrac.posun();
-			
+					
 			//posun pozice pozadi hraci plochy (skrolovani)
 			posunPozadiX = posunPozadiX + HraciPlocha.RYCHLOST;
 			//kdyz se pozadi cele doposouva, zacni od zacatku
@@ -133,6 +187,21 @@ public class HraciPlocha extends JPanel {
 			}
 			
 		}
+	}
+	
+	private void ukonciAVyresetujHruPoNarazu() {
+		hraBezi = false;
+		casovacAnimace.stop();
+		casovacAnimace = null;
+		vyresetujHru();
+	}
+
+	private boolean isKolizeSeZdi(Zed zed, Hrac hrac) {
+		return (zed.getMezSpodniCastiZdi().intersects(hrac.getMez())) || (zed.getMezHorniCastiZdi().intersects(hrac.getMez()));
+	}
+	
+	private boolean isKolizeSHraniciPlochy(Hrac hrac) {
+		return (hrac.getY() <= 0) || (hrac.getY() >= HraciPlocha.VYSKA - hrac.getVyskaHrace() - 40);
 	}
 	
 	private void spustHru(){
@@ -145,11 +214,13 @@ public class HraciPlocha extends JPanel {
 			}
 		});
 		
+		nastavZpravuPrazdna();
 		hraBezi = true;
 		casovacAnimace.start();
 	}
 	
 	public void pripravHraciPlochu(){
+		nastavZpravuOvladani();
 		
 		this.addMouseListener(new MouseAdapter() {
 			@Override
@@ -161,8 +232,10 @@ public class HraciPlocha extends JPanel {
 				if (e.getButton() == MouseEvent.BUTTON3) {
 					if (hraBezi) {
 						if (pauza) {
+							nastavZpravuPrazdna();
 							pauza = false;
 						} else{
+							nastavZpravuPauza();
 							pauza = true;
 						}
 					} else{
@@ -180,5 +253,48 @@ public class HraciPlocha extends JPanel {
 		
 		vyrobZdi(POCET_ZDI);
 		
+	}
+	
+	private void vyresetujHru(){
+		resetujVsechnyZdi();
+		hrac.reset();
+		
+		//nejprve zobraz stare skore, aby hrac videl kolik bodu ziskal
+		lbSkore.setText(skore + "");
+		//skore pak vynuluj
+		vynulujSkore();
+		nastavZpravuNarazDoZdi();
+	}
+
+	private void resetujVsechnyZdi() {
+		seznamZdi.clear();
+	}
+
+	private void vynulujSkore() {
+		skore = 0;		
+	}
+	
+	private void zvedniSkoreZed() {
+		skore = skore + Zed.BODY_ZA_ZED;
+	}
+	
+	private void nastavZpravuNarazDoZdi() {
+		lbZprava.setFont(font);
+		lbZprava.setText("Narazil jsi, zkus to znovu");
+	}
+	
+	private void nastavZpravuPauza() {
+		lbZprava.setFont(font);
+		lbZprava.setText("pauza");
+	}
+	
+	private void nastavZpravuOvladani() {
+		lbZprava.setFont(fontZpravy);
+		lbZprava.setText("pravy klik = start/stop, levy klik = skok");
+	}
+	
+	private void nastavZpravuPrazdna() {
+		lbZprava.setFont(font);
+		lbZprava.setText("");
 	}
 }
