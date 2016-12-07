@@ -42,5 +42,4 @@ public class FlappyBirdHlavniApp extends JFrame{
 		});
 
 	}
-
 }
