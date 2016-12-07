@@ -6,15 +6,15 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-public class ZdrojObrazkuSoubor extends ZdrojObrazku{
+public class ZdrojObrazkuSoubor extends ZdrojObrazku {
 	private static final String CESTA = "img/";
-	
+
 	@Override
 	public void naplnMapu() {
 		getMapa().put(Obrazek.POZADI.getKlic(), "pozadi.png");
 		getMapa().put(Obrazek.HRAC.getKlic(), "hrac.png");
 		getMapa().put(Obrazek.ZED.getKlic(), "zed.png");
-		//TODO pro hrace, zed a bonus
+		// TODO pro hrace, zed a bonus
 	}
 
 	@Override
@@ -22,6 +22,5 @@ public class ZdrojObrazkuSoubor extends ZdrojObrazku{
 		// TODO Auto-generated method stub
 		return ImageIO.read(new File(CESTA + getZdroj()));
 	}
-	
 
 }
