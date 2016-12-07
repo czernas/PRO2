@@ -18,6 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
+import obrazek.ManazerObrazku;
 import obrazek.Obrazek;
 import obrazek.ZdrojObrazkuSoubor;
 
@@ -52,8 +53,10 @@ public class HraciPlocha extends JPanel {
 	private boolean hraBezi = false;
 	private int posunPozadiX = 0;
 
-	public HraciPlocha() {
-		ZdrojObrazkuSoubor z = new ZdrojObrazkuSoubor();
+	public HraciPlocha(ManazerObrazku mo) {
+		imgPozadi = mo.getObrazek(Obrazek.POZADI); //tímto nahradíme to pod tím
+		
+		/*ZdrojObrazkuSoubor z = new ZdrojObrazkuSoubor();
 		z.naplnMapu();
 		z.setZdroj(Obrazek.POZADI.getKlic());
 
@@ -62,9 +65,11 @@ public class HraciPlocha extends JPanel {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
+		
+		hrac = new Hrac(mo.getObrazek(Obrazek.HRAC));
 
-		z.setZdroj(Obrazek.HRAC.getKlic());
+		/*z.setZdroj(Obrazek.HRAC.getKlic());
 		BufferedImage imgHrac;
 
 		try {
@@ -73,9 +78,11 @@ public class HraciPlocha extends JPanel {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-
-		z.setZdroj(Obrazek.ZED.getKlic());
+		}*/
+		
+		Zed.setObrazek(mo.getObrazek(Obrazek.ZED));
+		
+		/*z.setZdroj(Obrazek.ZED.getKlic());
 		BufferedImage imgZed;
 		try {
 			imgZed = z.getObrazek();
@@ -83,7 +90,7 @@ public class HraciPlocha extends JPanel {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 
 		seznamZdi = new SeznamZdi();
 

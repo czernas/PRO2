@@ -1,6 +1,7 @@
 package obrazek;
 
 import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.HashMap;
@@ -34,6 +35,16 @@ public class ManazerObrazku {
 			
 			img = zo.getObrazek();
 			
+			if (img != null) {
+			
+				if ( ! obrazekMaSpravneRozmery(img, o.getSirka(), o.getVyska())){
+					img = upravObrazek(img, o.getSirka(), o.getVyska());
+				}
+				
+			} else {
+				img = vyrobObrazek(o.getSirka(), o.getVyska(), o.getBarva());
+			}
+			
 		} catch (IOException e) {
 			img = vyrobObrazek(o.getSirka(), o.getVyska(), o.getBarva());
 		}
@@ -41,9 +52,25 @@ public class ManazerObrazku {
 		return img;
 	}
 
-	private BufferedImage vyrobObrazek(int sirka, int vyska, Color barva) {
-		// TODO Auto-generated method stub
+	private BufferedImage upravObrazek(BufferedImage img, int sirka, int vyska) {
+		BufferedImage zmenenyImage = new BufferedImage(sirka, vyska, img.getType());
+		Graphics2D g = zmenenyImage.createGraphics();
+		g.drawImage(img, 0, 0, sirka, vyska, null);
+		
 		return null;
+	}
+
+	private boolean obrazekMaSpravneRozmery(BufferedImage img, int sirka, int vyska) {
+		return (img.getWidth() == sirka) && (img.getHeight() == vyska);
+	}
+
+	private BufferedImage vyrobObrazek(int sirka, int vyska, Color barva) {
+		BufferedImage img = new BufferedImage(sirka, vyska, BufferedImage.TYPE_3BYTE_BGR);
+		Graphics2D g = img.createGraphics();
+		g.setColor(barva);
+		g.fillRect(0, 0, sirka, vyska);
+		g.dispose(); //na smazání plátna
+		return img;
 	}
 
 	public BufferedImage getObrazek(Obrazek o) {
