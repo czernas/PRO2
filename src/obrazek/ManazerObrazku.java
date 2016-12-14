@@ -57,7 +57,7 @@ public class ManazerObrazku {
 		Graphics2D g = zmenenyImage.createGraphics();
 		g.drawImage(img, 0, 0, sirka, vyska, null);
 		
-		return null;
+		return img;
 	}
 
 	private boolean obrazekMaSpravneRozmery(BufferedImage img, int sirka, int vyska) {

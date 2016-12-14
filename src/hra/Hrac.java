@@ -65,6 +65,8 @@ public class Hrac {
 	public void paint(Graphics g) {
 		g.drawImage(img, x, y, null);
 
+		
+		
 		if (HraciPlocha.DEBUG) {
 			g.setColor(Color.WHITE);
 			g.drawString("[x = " + x + ", y = " + y + ", rychlost = " + rychlost + "]", x, y - 5);

@@ -10,12 +10,13 @@ import javax.swing.SwingWorker;
 import hra.HraciPlocha;
 import obrazek.ManazerObrazku;
 import obrazek.ZdrojObrazkuSoubor;
+import obrazek.ZdrojObrazkuURL;
 
 public class FlappyBirdHlavniApp extends JFrame {
 	private ManazerObrazku mo;
 
 	public FlappyBirdHlavniApp() {
-		mo = new ManazerObrazku(new ZdrojObrazkuSoubor());
+		mo = new ManazerObrazku(new ZdrojObrazkuURL()); //tady nevytváøet ZdrojObrazkuSoubor, ale ZdrojObrazkuURL
 	}
 
 	public void initGUI() {
@@ -53,15 +54,14 @@ public class FlappyBirdHlavniApp extends JFrame {
 			@Override
 			protected Object doInBackground() throws Exception {
 				mo.pripravObrazky();
-				hraciPlocha = new HraciPlocha(mo);
-				hraciPlocha.pripravHraciPlochu();
 				return null;
 			}
 			
 			@Override
 			protected void done() {
 				super.done();
-				
+				hraciPlocha = new HraciPlocha(mo);
+				hraciPlocha.pripravHraciPlochu();
 				vlastnik.remove(lb);
 				vlastnik.revalidate();
 				vlastnik.add(hraciPlocha);
