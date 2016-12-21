@@ -46,6 +46,7 @@ public class HraciPlocha extends JPanel {
 	private Font font;
 	private Font fontZpravy;
 
+	private Bonus bonus;
 	private Hrac hrac;
 	private BufferedImage imgPozadi;
 	private Timer casovacAnimace;
@@ -93,6 +94,9 @@ public class HraciPlocha extends JPanel {
 		}*/
 
 		seznamZdi = new SeznamZdi();
+		
+		bonus = new Bonus(mo.getObrazek(Obrazek.BONUS));
+		bonus.setSeznamZdi(seznamZdi);
 
 		VyrobFontyALabely();
 	}
@@ -105,12 +109,12 @@ public class HraciPlocha extends JPanel {
 
 		lbZprava = new JLabel("");
 		lbZprava.setFont(fontZpravy);
-		lbZprava.setForeground(Color.WHITE);
+		lbZprava.setForeground(Color.RED);
 		lbZprava.setHorizontalAlignment(SwingConstants.CENTER);
 
-		lbSkore = new JLabel("0");
+		lbSkore = new JLabel("0 Votes");
 		lbSkore.setFont(font);
-		lbSkore.setForeground(Color.GREEN);
+		lbSkore.setForeground(Color.RED);
 		lbSkore.setHorizontalAlignment(SwingConstants.CENTER);
 
 		this.add(lbSkore, BorderLayout.NORTH);
@@ -151,7 +155,7 @@ public class HraciPlocha extends JPanel {
 
 		lbSkore.paint(g);
 		lbZprava.paint(g);
-
+		bonus.paint(g);
 	}
 
 	private void posun() {
@@ -172,6 +176,7 @@ public class HraciPlocha extends JPanel {
 				}
 
 				hrac.posun();
+				bonus.posun();
 
 				// hrac prosel zdi bez narazu
 				// zjistit, kde se nachazi
@@ -182,7 +187,13 @@ public class HraciPlocha extends JPanel {
 				if (hrac.getX() >= aktualniZed.getX()) {
 					seznamZdi.nastavDalsiZedNaAktualni();
 					zvedniSkoreZed();
-					lbSkore.setText(skore + "");
+					lbSkore.setText(skore + " Votes");
+				}
+				
+				if (isKolizeSBonusem(hrac)){
+					bonus.nastavNovyBonus();
+					zdevniSkoreBonus();
+					lbSkore.setText(skore + " Votes");
 				}
 			}
 
@@ -194,6 +205,14 @@ public class HraciPlocha extends JPanel {
 			}
 
 		}
+	}
+
+	private void zdevniSkoreBonus() {
+		skore = skore + Bonus.BODY_ZA_BONUS;		
+	}
+
+	private boolean isKolizeSBonusem(Hrac hrac) {
+		return bonus.getMez().intersects(hrac.getMez());
 	}
 
 	private void ukonciAVyresetujHruPoNarazu() {
@@ -266,10 +285,11 @@ public class HraciPlocha extends JPanel {
 	private void vyresetujHru() {
 		resetujVsechnyZdi();
 		hrac.reset();
+		bonus.nastavNovyBonus();
 
 		// nejprve zobraz stare skore, aby hrac videl kolik bodu ziskal
-		lbSkore.setText(skore + "");
-		// skore pak vynuluj
+		lbSkore.setText(skore + " Votes");
+		// skore pak vynuluj 
 		vynulujSkore();
 		nastavZpravuNarazDoZdi();
 	}
@@ -288,17 +308,17 @@ public class HraciPlocha extends JPanel {
 
 	private void nastavZpravuNarazDoZdi() {
 		lbZprava.setFont(font);
-		lbZprava.setText("Narazil jsi, zkus to znovu");
+		lbZprava.setText("You've choosen bad candidate");
 	}
 
 	private void nastavZpravuPauza() {
 		lbZprava.setFont(font);
-		lbZprava.setText("pauza");
+		lbZprava.setText("Noob");
 	}
 
 	private void nastavZpravuOvladani() {
 		lbZprava.setFont(fontZpravy);
-		lbZprava.setText("pravy klik = start/stop, levy klik = skok");
+		lbZprava.setText("pravy klik = start/stop eating Hillary, levy klik = Don't miss");
 	}
 
 	private void nastavZpravuPrazdna() {

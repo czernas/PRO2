@@ -19,7 +19,7 @@ public class Hrac {
 										// zmizí..
 	// pocatecni x-ova pozice hrace, nemeni se (neskace dopredu ani dozadu)
 	private int x;
-	// pocatecni y-ova pozice hrace, meni se (skace nahoru / dolu)¨
+	// pocatecni y-ova pozice hrace, meni se (skace nahoru / dolu)
 	private int y;
 	private int rychlost;
 

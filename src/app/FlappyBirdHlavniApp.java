@@ -22,7 +22,7 @@ public class FlappyBirdHlavniApp extends JFrame {
 	public void initGUI() {
 		setSize(HraciPlocha.SIRKA, HraciPlocha.VYSKA);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setTitle("NiggaDuck");
+		setTitle("Eat her everytime!");
 		setLocationRelativeTo(null);
 		setVisible(true);
 	}

@@ -26,6 +26,7 @@ public class ManazerObrazku {
 		pripravObrazek(Obrazek.HRAC);
 		pripravObrazek(Obrazek.POZADI);
 		pripravObrazek(Obrazek.ZED);
+		pripravObrazek(Obrazek.BONUS);
 	}
 
 	private BufferedImage nactiObrazek(Obrazek o) {
@@ -57,7 +58,7 @@ public class ManazerObrazku {
 		Graphics2D g = zmenenyImage.createGraphics();
 		g.drawImage(img, 0, 0, sirka, vyska, null);
 		
-		return img;
+		return zmenenyImage;
 	}
 
 	private boolean obrazekMaSpravneRozmery(BufferedImage img, int sirka, int vyska) {

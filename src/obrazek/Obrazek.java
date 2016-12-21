@@ -2,6 +2,7 @@ package obrazek;
 
 import java.awt.Color;
 
+import hra.Bonus;
 import hra.Hrac;
 import hra.HraciPlocha;
 import hra.Zed;
@@ -9,7 +10,8 @@ import hra.Zed;
 public enum Obrazek {
 	HRAC("hrac", Hrac.SIRKA, Hrac.VYSKA, new Color(255, 255, 255)), 
 	POZADI("pozadi", HraciPlocha.SIRKA * 3, HraciPlocha.VYSKA, new Color(0, 0, 150)), 
-	ZED("zed", Zed.SIRKA, HraciPlocha.VYSKA, new Color(120, 0, 0));
+	ZED("zed", Zed.SIRKA, HraciPlocha.VYSKA, new Color(120, 0, 0)),
+	BONUS("bonus", Bonus.SIRKA, Bonus.VYSKA, new Color(0,255,0));
 
 	// pocet prvku
 	private static final int size = Obrazek.values().length;
